@@ -16,24 +16,24 @@ public class PersonService {
     private final PersonRepository personRepository;
     private final LoginGeneratorService loginGeneratorService;
     private final AddressService addressService;
+    private final CpfValidatorService cpfValidatorService;
 
     public PersonResponse create(CreatePersonRequest request) {
+        if (!cpfValidatorService.isValid(request.getCpf())) {
+            throw new BusinessException("CPF inválido");
+        }
 
         if (personRepository.existsByEmail(request.getEmail())) {
-            throw new BusinessException("Email already registered");
+            throw new BusinessException("Email já cadastrado");
         }
 
         if (personRepository.existsByCpf(request.getCpf())) {
-            throw new BusinessException("CPF already registered");
+            throw new BusinessException("CPF já cadastrado");
         }
 
-        String generatedLogin =
-                loginGeneratorService.generate(
-                        request.getName());
+        String generatedLogin = loginGeneratorService.generate(request.getName());
 
-        ViaCepResponse addressData =
-                addressService.getAddressByZipCode(
-                        request.getZipCode());
+        ViaCepResponse addressData = addressService.getAddressByZipCode(request.getZipCode());
 
         Person person = Person.builder()
                 .name(request.getName())
@@ -41,12 +41,10 @@ public class PersonService {
                 .email(request.getEmail())
                 .birthDate(request.getBirthDate())
                 .zipCode(request.getZipCode())
-
                 .street(addressData.getLogradouro())
                 .district(addressData.getBairro())
                 .city(addressData.getLocalidade())
                 .state(addressData.getUf())
-
                 .complement(request.getComplement())
                 .login(generatedLogin)
                 .build();
