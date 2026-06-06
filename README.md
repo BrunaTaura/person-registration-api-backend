@@ -39,6 +39,37 @@ Ao realizar um cadastro:
 * O sistema gera automaticamente um login único
 * O login gerado é retornado para o usuário após o cadastro
 
+## Lógica de Geração do Login
+
+O login é gerado automaticamente a partir do nome informado no cadastro.
+
+Para garantir que o login siga as regras definidas no desafio, o sistema:
+
+* Remove acentos e caracteres especiais;
+* Converte todas as letras para minúsculas;
+* Utiliza combinações entre nome e sobrenomes para gerar um login com exatamente 7 caracteres;
+* Permite apenas letras, sem números ou espaços;
+* Verifica se o login já existe na base de dados;
+* Caso o login já esteja em uso, gera novas combinações até encontrar uma opção disponível.
+
+Dessa forma, todos os logins gerados são únicos, possuem exatamente 7 caracteres e são construídos utilizando informações do nome da pessoa.
+
+### Exemplo
+
+Nome:
+
+```text
+Maria Silva Souza
+```
+
+Login gerado:
+
+```text
+mariasi
+```
+
+Caso esse login já exista, o sistema tenta outras combinações do próprio nome até encontrar uma opção livre.
+
 ## Como executar o projeto
 
 ### Clonar o repositório
